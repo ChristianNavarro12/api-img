@@ -8,8 +8,17 @@ from pathlib import Path
 from uuid import uuid4
 import os
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
 
 # Crear la base de datos al iniciar la app
 create_db()
@@ -74,9 +83,9 @@ async def create_producto(
 @app.put("/productos/{producto_id}", response_model=ProductoSchema)
 async def update_producto(
     producto_id: int, 
-    descripcion: str = Form(...),  # Campo texto: descripcion
-    precio: str = Form(...),       # Campo texto: precio
-    file: UploadFile = File(None), # Campo archivo: imagen
+    descripcion: str = Form(...),  
+    precio: str = Form(...),       
+    file: UploadFile = File(None), 
     db: Session = Depends(get_db)
 ):
     # Buscar el producto existente por ID
